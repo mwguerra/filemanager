@@ -158,13 +158,20 @@ enum FileManagerIcon: string
      * Render the icon with the given CSS classes.
      *
      * Resolution order:
-     * 1. Check for custom override in plugin config (icon name or raw SVG)
-     * 2. Try to use svg() helper with the icon name
-     * 3. Fall back to bundled SVG
+     * 1. Check if icons are disabled (returns empty string)
+     * 2. Check for custom override in plugin config (icon name or raw SVG)
+     * 3. Try to use svg() helper with the icon name
+     * 4. Fall back to bundled SVG
      */
     public function render(string $class = ''): Htmlable
     {
-        // 1. Check for plugin override
+        // 1. Check if icons are disabled
+        $plugin = FileManagerPlugin::current();
+        if ($plugin !== null && ! $plugin->areIconsEnabled()) {
+            return new HtmlString('');
+        }
+
+        // 2. Check for plugin override
         $override = $this->getOverride();
 
         if ($override !== null) {

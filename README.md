@@ -377,6 +377,76 @@ FileManagerPlugin::make()
     ->fileManagerSidebarRootLabel('Files Root')  // Override for File Manager only
 ```
 
+### Icon Customization
+
+The file manager uses heroicons by default, but includes fallback SVGs that work without the `blade-icons/blade-heroicons` package. You can customize icons through the plugin configuration.
+
+**Override specific icons:**
+
+```php
+use MWGuerra\FileManager\FileManagerPlugin;
+use MWGuerra\FileManager\Enums\FileManagerIcon;
+
+FileManagerPlugin::make()
+    // Override multiple icons at once
+    ->icons([
+        'folder' => 'phosphor-folder',  // Use a different icon set
+        'document' => '<svg xmlns="http://www.w3.org/2000/svg" ...>...</svg>',  // Raw SVG
+    ])
+
+    // Or override a single icon
+    ->icon(FileManagerIcon::Folder, 'tabler-folder')
+    ->icon('trash', 'heroicon-s-trash')  // String keys also work
+```
+
+**Disable all icons:**
+
+```php
+FileManagerPlugin::make()
+    ->noIcons()  // Icons will not render (returns empty string)
+```
+
+**Re-enable icons:**
+
+```php
+FileManagerPlugin::make()
+    ->withIcons()  // Explicitly enable (default)
+```
+
+**Available icons:**
+
+| Icon | Default | Description |
+|------|---------|-------------|
+| `folder` | `heroicon-o-folder` | Folder icon |
+| `folder-open` | `heroicon-o-folder-open` | Open folder icon |
+| `folder-plus` | `heroicon-m-folder-plus` | Add folder icon |
+| `document` | `heroicon-o-document` | Generic file icon |
+| `document-text` | `heroicon-o-document-text` | Text file icon |
+| `chevron-right` | `heroicon-m-chevron-right` | Expand chevron |
+| `chevron-down` | `heroicon-m-chevron-down` | Collapse chevron |
+| `musical-note` | `heroicon-o-musical-note` | Audio file icon |
+| `video-camera` | `heroicon-o-video-camera` | Video file icon |
+| `photo` | `heroicon-o-photo` | Image file icon |
+| `trash` | `heroicon-o-trash` | Delete action |
+| `pencil` | `heroicon-m-pencil` | Edit action |
+| `cloud-arrow-up` | `heroicon-o-cloud-arrow-up` | Upload icon |
+| `arrow-down-tray` | `heroicon-o-arrow-down-tray` | Download icon |
+
+All icons have bundled SVG fallbacks, so the file manager works even without `blade-icons` installed.
+
+**Using icons in your own code:**
+
+```php
+use MWGuerra\FileManager\Enums\FileManagerIcon;
+
+// In Blade templates
+{!! FileManagerIcon::Folder->render('w-5 h-5 text-primary-500') !!}
+
+// Using the helper function
+{!! fmicon('folder', 'w-5 h-5') !!}
+{!! fmicon(FileManagerIcon::Document, 'w-4 h-4 text-gray-500') !!}
+```
+
 ## Artisan Commands
 
 ### filemanager:install

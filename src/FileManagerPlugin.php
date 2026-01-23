@@ -106,6 +106,11 @@ class FileManagerPlugin implements Plugin
     // =========================================================================
 
     /**
+     * Whether icons are enabled globally.
+     */
+    protected bool $iconsEnabled = true;
+
+    /**
      * Custom icon overrides.
      * Keys are icon names (e.g., 'folder', 'document').
      * Values can be icon names (e.g., 'phosphor-folder') or raw SVG strings.
@@ -731,6 +736,43 @@ class FileManagerPlugin implements Plugin
     // =========================================================================
     // Icon Configuration
     // =========================================================================
+
+    /**
+     * Disable all icons in the file manager.
+     *
+     * When icons are disabled, FileManagerIcon::render() returns an empty string.
+     * This is useful for accessibility or performance optimizations.
+     *
+     * @example
+     * FileManagerPlugin::make()->noIcons()
+     */
+    public function noIcons(): static
+    {
+        $this->iconsEnabled = false;
+
+        return $this;
+    }
+
+    /**
+     * Enable icons in the file manager (default).
+     *
+     * @example
+     * FileManagerPlugin::make()->withIcons()
+     */
+    public function withIcons(): static
+    {
+        $this->iconsEnabled = true;
+
+        return $this;
+    }
+
+    /**
+     * Check if icons are enabled.
+     */
+    public function areIconsEnabled(): bool
+    {
+        return $this->iconsEnabled;
+    }
 
     /**
      * Configure custom icons for the file manager.
