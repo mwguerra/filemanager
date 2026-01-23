@@ -56,7 +56,10 @@
             "MWGuerra\\FileManager\\": "src/",
             "MWGuerra\\FileManager\\Database\\Factories\\": "database/factories/",
             "MWGuerra\\FileManager\\Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

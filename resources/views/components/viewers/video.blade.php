@@ -6,6 +6,7 @@ Variables:
 - $item: The FileSystemItem model (optional)
 --}}
 @php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
     $url = $url ?? null;
     $item = $item ?? null;
     // Create a unique key to force Alpine re-initialization when URL changes
@@ -46,7 +47,7 @@ Variables:
 
     {{-- Error State --}}
     <div x-show="error" x-cloak class="flex flex-col items-center justify-center text-center p-6 text-white">
-        <x-heroicon-o-video-camera-slash class="w-12 h-12 text-amber-500 mb-3" />
+        {!! FileManagerIcon::VideoCameraSlash->render('w-12 h-12 text-amber-500 mb-3') !!}
         <p class="font-medium">Video unavailable</p>
         <p class="text-sm text-gray-400 mt-1">
             This video could not be loaded. It may be inaccessible or the URL has expired.
@@ -57,7 +58,7 @@ Variables:
                 download="{{ $item?->getName() ?? 'download' }}"
                 class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors text-sm"
             >
-                <x-heroicon-o-arrow-down-tray class="w-4 h-4" />
+                {!! FileManagerIcon::ArrowDownTray->render('w-4 h-4') !!}
                 Download Video
             </a>
         @endif

@@ -1,5 +1,6 @@
 {{-- File/Folder Card for Grid View --}}
 @php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
     $itemId = $item->getIdentifier();
     $itemName = $item->getName();
     $isReadOnly = $isReadOnly ?? false;
@@ -34,7 +35,7 @@
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 opacity-0 group-hover:opacity-100' }}"
         >
             @if($isSelected)
-                <x-heroicon-m-check class="w-3 h-3" />
+                {!! FileManagerIcon::Check->render('w-3 h-3') !!}
             @endif
         </button>
     @endif
@@ -43,7 +44,7 @@
     <div class="flex flex-col gap-3">
         @if($item->isFolder())
             <div class="flex aspect-video items-center justify-center rounded-md bg-gray-100 dark:bg-gray-700">
-                <x-heroicon-o-folder class="w-12 h-12 text-primary-500" />
+                {!! FileManagerIcon::Folder->render('w-12 h-12 text-primary-500') !!}
             </div>
         @else
             <div class="relative aspect-video overflow-hidden rounded-md bg-gray-100 dark:bg-gray-700">
@@ -52,21 +53,21 @@
                 @else
                     <div class="flex h-full items-center justify-center">
                         @if($item->isVideo())
-                            <x-heroicon-o-video-camera class="w-12 h-12 text-red-500 dark:text-red-400" />
+                            {!! FileManagerIcon::VideoCamera->render('w-12 h-12 text-red-500 dark:text-red-400') !!}
                         @elseif($item->isImage())
-                            <x-heroicon-o-photo class="w-12 h-12 text-blue-500 dark:text-blue-400" />
+                            {!! FileManagerIcon::Photo->render('w-12 h-12 text-blue-500 dark:text-blue-400') !!}
                         @elseif($item->isDocument())
-                            <x-heroicon-o-document-text class="w-12 h-12 text-green-600 dark:text-green-400" />
+                            {!! FileManagerIcon::DocumentText->render('w-12 h-12 text-green-600 dark:text-green-400') !!}
                         @elseif($item->isAudio())
-                            <x-heroicon-o-musical-note class="w-12 h-12 text-purple-500 dark:text-purple-400" />
+                            {!! FileManagerIcon::MusicalNote->render('w-12 h-12 text-purple-500 dark:text-purple-400') !!}
                         @else
-                            <x-heroicon-o-document class="w-12 h-12 text-gray-500 dark:text-gray-400" />
+                            {!! FileManagerIcon::Document->render('w-12 h-12 text-gray-500 dark:text-gray-400') !!}
                         @endif
                     </div>
                 @endif
                 @if($item->isVideo())
                     <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                        <x-heroicon-o-play class="w-8 h-8 text-white" />
+                        {!! FileManagerIcon::Play->render('w-8 h-8 text-white') !!}
                     </div>
                 @endif
             </div>
@@ -97,7 +98,7 @@
                             x-on:click.stop
                             class="p-1 rounded opacity-0 group-hover:opacity-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-opacity"
                         >
-                            <x-heroicon-o-ellipsis-vertical class="w-5 h-5" />
+                            {!! FileManagerIcon::EllipsisVertical->render('w-5 h-5') !!}
                         </button>
                     </x-slot>
 

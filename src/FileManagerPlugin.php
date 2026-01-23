@@ -10,6 +10,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
+use MWGuerra\FileManager\Enums\FileManagerIcon;
 use MWGuerra\FileManager\Filament\Pages\EmbedConfigTest;
 use MWGuerra\FileManager\Filament\Pages\FileManager;
 use MWGuerra\FileManager\Filament\Pages\FileSystem;
@@ -99,6 +100,19 @@ class FileManagerPlugin implements Plugin
     // =========================================================================
 
     protected bool $embedConfigTestEnabled = true;
+
+    // =========================================================================
+    // Icon Configuration
+    // =========================================================================
+
+    /**
+     * Custom icon overrides.
+     * Keys are icon names (e.g., 'folder', 'document').
+     * Values can be icon names (e.g., 'phosphor-folder') or raw SVG strings.
+     *
+     * @var array<string, string>
+     */
+    protected array $iconOverrides = [];
 
     // =========================================================================
     // Plugin Interface Methods
@@ -712,5 +726,69 @@ class FileManagerPlugin implements Plugin
     public function isSchemaExampleEnabled(): bool
     {
         return $this->schemaExampleEnabled;
+    }
+
+    // =========================================================================
+    // Icon Configuration
+    // =========================================================================
+
+    /**
+     * Configure custom icons for the file manager.
+     *
+     * You can override any icon used in the file manager by providing either:
+     * - An icon name (e.g., 'phosphor-folder', 'tabler-file')
+     * - A raw SVG string (e.g., '<svg>...</svg>')
+     *
+     * @param array<string, string> $icons Map of icon names to custom values
+     *
+     * @example
+     * FileManagerPlugin::make()
+     *     ->icons([
+     *         'folder' => 'phosphor-folder',
+     *         'document' => '<svg xmlns="http://www.w3.org/2000/svg">...</svg>',
+     *     ])
+     */
+    public function icons(array $icons): static
+    {
+        $this->iconOverrides = array_merge($this->iconOverrides, $icons);
+
+        return $this;
+    }
+
+    /**
+     * Set a single icon override.
+     *
+     * @param FileManagerIcon|string $icon The icon to override
+     * @param string $value The custom icon name or SVG string
+     */
+    public function icon(FileManagerIcon|string $icon, string $value): static
+    {
+        $key = $icon instanceof FileManagerIcon ? $icon->value : $icon;
+        $this->iconOverrides[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get the custom override for a specific icon.
+     *
+     * @param FileManagerIcon|string $icon The icon to get override for
+     * @return string|null The custom value or null if not overridden
+     */
+    public function getIconOverride(FileManagerIcon|string $icon): ?string
+    {
+        $key = $icon instanceof FileManagerIcon ? $icon->value : $icon;
+
+        return $this->iconOverrides[$key] ?? null;
+    }
+
+    /**
+     * Get all icon overrides.
+     *
+     * @return array<string, string>
+     */
+    public function getIconOverrides(): array
+    {
+        return $this->iconOverrides;
     }
 }

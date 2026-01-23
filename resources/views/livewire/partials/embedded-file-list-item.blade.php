@@ -1,5 +1,6 @@
 {{-- File/Folder Row for Embedded List View --}}
 @php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
     $itemId = $item->getIdentifier();
     $itemName = $item->getName();
     $isReadOnly = $isReadOnly ?? false;
@@ -34,14 +35,14 @@
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800' }}"
         >
             @if($isSelected)
-                <x-heroicon-m-check class="w-2.5 h-2.5" />
+                {!! FileManagerIcon::Check->render('w-2.5 h-2.5') !!}
             @endif
         </button>
     @endif
 
     {{-- Thumbnail/Icon --}}
     @if($item->isFolder())
-        <x-heroicon-o-folder class="w-8 h-8 shrink-0 text-primary-500" />
+        {!! FileManagerIcon::Folder->render('w-8 h-8 shrink-0 text-primary-500') !!}
     @else
         <div class="relative h-10 w-16 shrink-0 overflow-hidden rounded bg-gray-100 dark:bg-gray-700">
             @if($item->getThumbnail())
@@ -49,15 +50,15 @@
             @else
                 <div class="flex h-full items-center justify-center">
                     @if($item->isVideo())
-                        <x-heroicon-o-video-camera class="w-5 h-5 text-red-500 dark:text-red-400" />
+                        {!! FileManagerIcon::VideoCamera->render('w-5 h-5 text-red-500 dark:text-red-400') !!}
                     @elseif($item->isImage())
-                        <x-heroicon-o-photo class="w-5 h-5 text-blue-500 dark:text-blue-400" />
+                        {!! FileManagerIcon::Photo->render('w-5 h-5 text-blue-500 dark:text-blue-400') !!}
                     @elseif($item->isDocument())
-                        <x-heroicon-o-document-text class="w-5 h-5 text-green-600 dark:text-green-400" />
+                        {!! FileManagerIcon::DocumentText->render('w-5 h-5 text-green-600 dark:text-green-400') !!}
                     @elseif($item->isAudio())
-                        <x-heroicon-o-musical-note class="w-5 h-5 text-purple-500 dark:text-purple-400" />
+                        {!! FileManagerIcon::MusicalNote->render('w-5 h-5 text-purple-500 dark:text-purple-400') !!}
                     @else
-                        <x-heroicon-o-document class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        {!! FileManagerIcon::Document->render('w-5 h-5 text-gray-500 dark:text-gray-400') !!}
                     @endif
                 </div>
             @endif
@@ -90,7 +91,7 @@
                             x-on:click.stop
                             class="p-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
-                            <x-heroicon-o-ellipsis-vertical class="w-4 h-4" />
+                            {!! FileManagerIcon::EllipsisVertical->render('w-4 h-4') !!}
                         </button>
                     </x-slot>
 

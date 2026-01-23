@@ -9,6 +9,7 @@ Variables:
 - $fileType: The FileTypeContract instance (optional)
 --}}
 @php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
     $url = $url ?? null;
     $item = $item ?? null;
     $fileType = $fileType ?? null;
@@ -21,7 +22,7 @@ Variables:
             class="w-20 h-20 mb-4 {{ $fileType->iconColor() }}"
         />
     @else
-        <x-heroicon-o-eye-slash class="w-20 h-20 mb-4" />
+        {!! FileManagerIcon::EyeSlash->render('w-20 h-20 mb-4') !!}
     @endif
 
     <p class="text-lg font-medium text-gray-700 dark:text-gray-300">
@@ -40,7 +41,7 @@ Variables:
             download="{{ $item?->name }}"
             class="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors"
         >
-            <x-heroicon-o-arrow-down-tray class="w-5 h-5" />
+            {!! FileManagerIcon::ArrowDownTray->render('w-5 h-5') !!}
             Download file
         </a>
     @endif

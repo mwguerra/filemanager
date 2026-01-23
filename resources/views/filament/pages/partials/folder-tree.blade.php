@@ -1,5 +1,6 @@
 {{-- Recursive folder tree component --}}
 @php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
     $isReadOnly = $isReadOnly ?? false;
 @endphp
 @foreach($folders as $folder)
@@ -22,9 +23,9 @@
                     title="Expand/collapse"
                 >
                     @if($this->isFolderExpanded($folderId))
-                        <x-heroicon-m-chevron-down class="w-3.5 h-3.5" />
+                        {!! FileManagerIcon::ChevronDown->render('w-3.5 h-3.5') !!}
                     @else
-                        <x-heroicon-m-chevron-right class="w-3.5 h-3.5" />
+                        {!! FileManagerIcon::ChevronRight->render('w-3.5 h-3.5') !!}
                     @endif
                 </button>
             @else
@@ -36,7 +37,7 @@
                 x-on:click="$wire.navigateTo({{ json_encode($folderId) }})"
                 class="flex items-center gap-2 flex-1 min-w-0 text-left"
             >
-                <x-heroicon-o-folder class="w-4 h-4 text-primary-500 shrink-0" />
+                {!! FileManagerIcon::Folder->render('w-4 h-4 text-primary-500 shrink-0') !!}
                 <span class="truncate text-gray-700 dark:text-gray-300">{{ $folder['name'] }}</span>
             </button>
 
@@ -64,7 +65,7 @@
                             class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                             title="Add subfolder"
                         >
-                            <x-heroicon-m-folder-plus class="w-3.5 h-3.5" />
+                            {!! FileManagerIcon::FolderPlus->render('w-3.5 h-3.5') !!}
                         </button>
 
                         {{-- Rename --}}
@@ -73,7 +74,7 @@
                             class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                             title="Rename"
                         >
-                            <x-heroicon-m-pencil class="w-3.5 h-3.5" />
+                            {!! FileManagerIcon::Pencil->render('w-3.5 h-3.5') !!}
                         </button>
 
                         {{-- Move --}}
@@ -82,7 +83,7 @@
                             class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                             title="Move"
                         >
-                            <x-heroicon-m-arrow-right-circle class="w-3.5 h-3.5" />
+                            {!! FileManagerIcon::ArrowRightCircleMini->render('w-3.5 h-3.5') !!}
                         </button>
                     </div>
                 @endif

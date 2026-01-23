@@ -1,5 +1,7 @@
 {{-- EmbeddedFileSystem - Read-only file browser --}}
-
+@php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
+@endphp
 <div class="fi-embedded-file-manager border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" style="height: {{ $height }};">
     <div class="flex flex-col h-full" x-data="{}">
         @if($showHeader)
@@ -9,7 +11,7 @@
             <nav class="flex items-center space-x-2 text-sm">
                 @foreach($this->breadcrumbs as $index => $crumb)
                     @if($index > 0)
-                        <x-heroicon-m-chevron-right class="w-4 h-4 text-gray-400" />
+                        {!! FileManagerIcon::ChevronRight->render('w-4 h-4 text-gray-400') !!}
                     @endif
                     @php
                         $crumbName = $index === 0 ? $breadcrumbsRootLabel : $crumb['name'];
@@ -46,14 +48,14 @@
                         class="p-1 rounded {{ $viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm' : '' }}"
                         title="Grid view"
                     >
-                        <x-heroicon-o-squares-2x2 class="w-3.5 h-3.5" />
+                        {!! FileManagerIcon::Squares2x2->render('w-3.5 h-3.5') !!}
                     </button>
                     <button
                         x-on:click="$wire.setViewMode('list')"
                         class="p-1 rounded {{ $viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm' : '' }}"
                         title="List view"
                     >
-                        <x-heroicon-o-list-bullet class="w-3.5 h-3.5" />
+                        {!! FileManagerIcon::ListBullet->render('w-3.5 h-3.5') !!}
                     </button>
                 </div>
             </div>
@@ -73,7 +75,7 @@
                         x-on:click="$wire.navigateTo(null)"
                         class="flex w-full items-center gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 {{ $currentPath === null ? 'font-medium' : '' }}"
                     >
-                        <x-heroicon-o-folder class="w-4 h-4 text-primary-500 shrink-0" />
+                        {!! FileManagerIcon::Folder->render('w-4 h-4 text-primary-500 shrink-0') !!}
                         <span class="truncate text-sm text-gray-700 dark:text-gray-300">{{ $sidebarRootLabel }}</span>
                     </button>
 
@@ -88,7 +90,7 @@
                 @if($this->items->isEmpty())
                     {{-- Empty State --}}
                     <div class="flex flex-col items-center justify-center h-full">
-                        <x-heroicon-o-folder-open class="w-12 h-12 text-gray-400 dark:text-gray-500 mb-3" />
+                        {!! FileManagerIcon::FolderOpen->render('w-12 h-12 text-gray-400 dark:text-gray-500 mb-3') !!}
                         <p class="text-sm text-gray-600 dark:text-gray-400">This folder is empty</p>
                     </div>
                 @else
@@ -131,7 +133,7 @@
                             class="w-5 h-5 {{ $fileType->iconColor() }}"
                         />
                     @else
-                        <x-heroicon-o-document class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        {!! FileManagerIcon::Document->render('w-5 h-5 text-gray-500 dark:text-gray-400') !!}
                     @endif
                     <span class="truncate">{{ $previewItem->getName() }}</span>
                 </div>

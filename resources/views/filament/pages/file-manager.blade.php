@@ -1,3 +1,6 @@
+@php
+    use MWGuerra\FileManager\Enums\FileManagerIcon;
+@endphp
 <x-filament-panels::page>
     @push('styles')
     <style>
@@ -20,7 +23,7 @@
             <nav class="flex items-center space-x-2 text-sm">
                 @foreach($this->breadcrumbs as $index => $crumb)
                     @if($index > 0)
-                        <x-heroicon-m-chevron-right class="w-4 h-4 text-gray-400" />
+                        {!! FileManagerIcon::ChevronRight->render('w-4 h-4 text-gray-400') !!}
                     @endif
                     @if($index === count($this->breadcrumbs) - 1)
                         <span class="font-medium text-gray-900 dark:text-white">{{ $crumb['name'] }}</span>
@@ -89,14 +92,14 @@
                         class="p-1.5 rounded {{ $viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm' : '' }}"
                         title="Grid view"
                     >
-                        <x-heroicon-o-squares-2x2 class="w-4 h-4" />
+                        {!! FileManagerIcon::Squares2x2->render('w-4 h-4') !!}
                     </button>
                     <button
                         wire:click="setViewMode('list')"
                         class="p-1.5 rounded {{ $viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm' : '' }}"
                         title="List view"
                     >
-                        <x-heroicon-o-list-bullet class="w-4 h-4" />
+                        {!! FileManagerIcon::ListBullet->render('w-4 h-4') !!}
                     </button>
                 </div>
             </div>
@@ -122,7 +125,7 @@
                             wire:click="navigateTo(null)"
                             class="flex items-center gap-2 flex-1 min-w-0 text-left"
                         >
-                            <x-heroicon-o-folder class="w-4 h-4 text-primary-500 shrink-0" />
+                            {!! FileManagerIcon::Folder->render('w-4 h-4 text-primary-500 shrink-0') !!}
                             <span class="truncate text-gray-700 dark:text-gray-300">{{ $this->getSidebarRootLabel() }}</span>
                         </button>
 
@@ -151,7 +154,7 @@
                                         class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                         title="Add folder"
                                     >
-                                        <x-heroicon-m-folder-plus class="w-3.5 h-3.5" />
+                                        {!! FileManagerIcon::FolderPlus->render('w-3.5 h-3.5') !!}
                                     </button>
                                 </div>
                             @endif
@@ -169,7 +172,7 @@
                 @if($this->items->isEmpty())
                     {{-- Empty State --}}
                     <div class="flex flex-col items-center justify-center h-full">
-                        <x-heroicon-o-folder-open class="w-16 h-16 text-gray-400 dark:text-gray-500 mb-4" />
+                        {!! FileManagerIcon::FolderOpen->render('w-16 h-16 text-gray-400 dark:text-gray-500 mb-4') !!}
                         <p class="text-lg text-gray-600 dark:text-gray-400">This folder is empty</p>
                         <p class="text-sm text-gray-500 dark:text-gray-500">Create a new folder or upload files to get started</p>
                     </div>
@@ -184,7 +187,7 @@
                                         wire:click="clearSelection"
                                         class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                     >
-                                        <x-heroicon-o-x-mark class="w-4 h-4" />
+                                        {!! FileManagerIcon::XMark->render('w-4 h-4') !!}
                                         <span>Deselect All</span>
                                     </button>
                                 @else
@@ -192,7 +195,7 @@
                                         wire:click="selectAll"
                                         class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                     >
-                                        <x-heroicon-o-check-circle class="w-4 h-4" />
+                                        {!! FileManagerIcon::CheckCircle->render('w-4 h-4') !!}
                                         <span>Select All</span>
                                     </button>
                                 @endif
@@ -209,7 +212,7 @@
                                         wire:click="openMoveDialogForSelected"
                                         class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                     >
-                                        <x-heroicon-o-arrow-right-circle class="w-4 h-4" />
+                                        {!! FileManagerIcon::ArrowRightCircle->render('w-4 h-4') !!}
                                         <span>Move</span>
                                     </button>
                                 @endif
@@ -223,7 +226,7 @@
                                         wire:confirm="Are you sure you want to delete {{ count($selectedItems) }} item(s)?"
                                         class="flex items-center gap-2 text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
                                     >
-                                        <x-heroicon-o-trash class="w-4 h-4" />
+                                        {!! FileManagerIcon::Trash->render('w-4 h-4') !!}
                                         <span>Delete</span>
                                     </button>
                                 @endif
@@ -307,7 +310,7 @@
                 wire:click="setMoveTarget(null)"
                 class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 {{ $moveTargetPath === null ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600' : '' }}"
             >
-                <x-heroicon-o-folder class="w-4 h-4" />
+                {!! FileManagerIcon::Folder->render('w-4 h-4') !!}
                 <span>Root</span>
             </button>
 
@@ -329,7 +332,7 @@
                         {{ $isDisabled ? 'opacity-50 cursor-not-allowed' : '' }}"
                     style="padding-left: {{ $folder->getDepth() * 16 + 12 }}px"
                 >
-                    <x-heroicon-o-folder class="w-4 h-4" />
+                    {!! FileManagerIcon::Folder->render('w-4 h-4') !!}
                     <span>{{ $folder->getName() }}</span>
                 </button>
             @endforeach
@@ -470,7 +473,7 @@
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div class="space-y-2" wire:loading.remove wire:target="uploadedFiles">
-                    <x-heroicon-o-cloud-arrow-up class="w-12 h-12 mx-auto text-gray-400" />
+                    {!! FileManagerIcon::CloudArrowUp->render('w-12 h-12 mx-auto text-gray-400') !!}
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         <span class="font-medium text-primary-600 dark:text-primary-400">Click to upload</span>
                         or drag and drop
@@ -499,7 +502,7 @@
                     <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1 max-h-32 overflow-y-auto">
                         @foreach($uploadedFiles as $file)
                             <li class="flex items-center gap-2">
-                                <x-heroicon-o-check-circle class="w-4 h-4 shrink-0 text-success-500" />
+                                {!! FileManagerIcon::CheckCircle->render('w-4 h-4 shrink-0 text-success-500') !!}
                                 <span class="truncate">{{ $file->getClientOriginalName() }}</span>
                                 <span class="text-xs text-gray-400">({{ number_format($file->getSize() / 1024, 1) }} KB)</span>
                             </li>
@@ -555,7 +558,7 @@
                             class="w-6 h-6 {{ $fileType->iconColor() }}"
                         />
                     @else
-                        <x-heroicon-o-document class="w-6 h-6 text-gray-400" />
+                        {!! FileManagerIcon::Document->render('w-6 h-6 text-gray-400') !!}
                     @endif
                     <span class="truncate">{{ $previewItem->getName() }}</span>
                 </div>
