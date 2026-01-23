@@ -38,9 +38,24 @@ interface FileManagerAdapterInterface
     /**
      * Get the folder tree structure.
      *
+     * For performance with remote storage (S3), this may return only root-level
+     * folders with children loaded lazily via getFolderChildren().
+     *
+     * @param bool $lazy If true, only load root folders (children loaded on-demand)
      * @return array Nested array of folders
      */
-    public function getFolderTree(): array;
+    public function getFolderTree(bool $lazy = false): array;
+
+    /**
+     * Get immediate children of a folder (for lazy loading).
+     *
+     * This method is optimized for remote storage by only loading one level deep.
+     * Each child includes a 'has_children' flag to indicate if it has subfolders.
+     *
+     * @param string|null $path The folder path (null for root)
+     * @return array Array of folder data with id, name, path, has_children
+     */
+    public function getFolderChildren(?string $path = null): array;
 
     /**
      * Get breadcrumbs for a path.

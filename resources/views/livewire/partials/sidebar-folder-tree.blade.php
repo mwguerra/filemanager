@@ -6,7 +6,8 @@
 @foreach($folders as $folder)
     @php
         $folderId = (string) $folder['id'];
-        $hasChildren = count($folder['children']) > 0;
+        // Use has_children flag for lazy loading, fall back to checking children array
+        $hasChildren = $folder['has_children'] ?? (count($folder['children'] ?? []) > 0);
     @endphp
     <div>
         <div

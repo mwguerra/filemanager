@@ -268,13 +268,76 @@ class StorageAdapter implements FileManagerAdapterInterface
         return null;
     }
 
-    public function getFolderTree(): array
+    public function getFolderTree(bool $lazy = false): array
     {
+        if ($lazy) {
+            // Lazy mode: only load root-level folders, children loaded on-demand
+            return $this->getFolderChildren(null);
+        }
+
+        // Full recursive mode (original behavior, avoid for S3)
         return $this->buildFolderTree($this->root, 0);
     }
 
     /**
+     * Get immediate children of a folder (for lazy loading).
+     *
+     * Optimized for remote storage (S3) - makes only ONE API call to list directories.
+     * Does not count files or check for grandchildren to minimize API calls.
+     *
+     * Performance: For a folder with N subfolders:
+     * - Old recursive approach: O(total_folders) API calls
+     * - This lazy approach: O(1) API call per level expanded
+     *
+     * @param string|null $path The folder path (null for root)
+     * @return array Array of folder data with id, name, path, has_children
+     */
+    public function getFolderChildren(?string $path = null): array
+    {
+        $fullPath = $this->normalizePath($path);
+        $children = [];
+
+        try {
+            // Single API call to list immediate directories
+            $directories = $this->storage()->directories($fullPath);
+
+            foreach ($directories as $dir) {
+                $name = basename($dir);
+                if (!$this->showHidden && $this->isHidden($name)) {
+                    continue;
+                }
+
+                $displayPath = $this->displayPath($dir);
+
+                // Assume all folders might have children to avoid extra API calls.
+                // The expand chevron will be shown, but if no children exist,
+                // it will simply show an empty list when expanded.
+                // This trades UX precision for significant performance gains.
+                $children[] = [
+                    'id' => $displayPath ?: null,
+                    'name' => $name,
+                    'path' => '/' . $displayPath,
+                    'file_count' => 0, // Skip file counting for performance
+                    'has_children' => true, // Assume true to avoid extra API calls
+                    'children' => [], // Children loaded on-demand
+                    'children_loaded' => false,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Return empty on error
+        }
+
+        // Sort by name
+        usort($children, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+
+        return $children;
+    }
+
+    /**
      * Recursively build folder tree with depth limit.
+     *
+     * WARNING: This method can be slow with remote storage (S3) due to
+     * multiple API calls. Use getFolderTree(lazy: true) for better performance.
      *
      * @param string $path The path to build tree from
      * @param int $depth Current recursion depth
@@ -300,18 +363,22 @@ class StorageAdapter implements FileManagerAdapterInterface
 
                 $displayPath = $this->displayPath($dir);
 
-                // Count files in this folder
+                // Count files in this folder (can be slow for S3)
                 $fileCount = count(array_filter(
                     $this->storage()->files($dir),
                     fn ($f) => $this->showHidden || !$this->isHidden(basename($f))
                 ));
+
+                $children = $this->buildFolderTree($dir, $depth + 1);
 
                 $tree[] = [
                     'id' => $displayPath ?: null,
                     'name' => $name,
                     'path' => '/' . $displayPath,
                     'file_count' => $fileCount,
-                    'children' => $this->buildFolderTree($dir, $depth + 1),
+                    'has_children' => !empty($children),
+                    'children' => $children,
+                    'children_loaded' => true,
                 ];
             }
         } catch (\Exception $e) {

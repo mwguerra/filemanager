@@ -32,6 +32,12 @@ class FileManagerSidebar extends Component
     public array $expandedFolders = [];
 
     /**
+     * Cached folder tree with lazy-loaded children.
+     * Keys are folder IDs, values are arrays of children.
+     */
+    public array $folderChildrenCache = [];
+
+    /**
      * URL to navigate to when a folder is clicked.
      */
     public ?string $fileManagerUrl = null;
@@ -79,11 +85,69 @@ class FileManagerSidebar extends Component
     }
 
     /**
+     * Check if we should use lazy loading for the folder tree.
+     *
+     * Lazy loading is recommended for storage mode (S3, remote storage)
+     * to avoid excessive API calls on page load.
+     */
+    protected function shouldUseLazyLoading(): bool
+    {
+        return $this->getAdapter()->getModeName() === 'storage';
+    }
+
+    /**
      * Get folder tree for the sidebar.
+     *
+     * For storage mode (S3), uses lazy loading to minimize API calls.
+     * Children are loaded on-demand when folders are expanded.
      */
     public function getFolderTreeProperty(): array
     {
-        return $this->getAdapter()->getFolderTree();
+        $useLazy = $this->shouldUseLazyLoading();
+        $tree = $this->getAdapter()->getFolderTree($useLazy);
+
+        if ($useLazy) {
+            // Merge in any already-loaded children from cache
+            return $this->mergeLoadedChildren($tree);
+        }
+
+        return $tree;
+    }
+
+    /**
+     * Merge cached children into the folder tree.
+     */
+    protected function mergeLoadedChildren(array $folders): array
+    {
+        return array_map(function ($folder) {
+            $folderId = (string) $folder['id'];
+
+            // Check if we have cached children for this folder
+            if (isset($this->folderChildrenCache[$folderId])) {
+                $folder['children'] = $this->mergeLoadedChildren($this->folderChildrenCache[$folderId]);
+                $folder['children_loaded'] = true;
+                $folder['has_children'] = !empty($folder['children']);
+            }
+
+            return $folder;
+        }, $folders);
+    }
+
+    /**
+     * Load children for a folder (lazy loading).
+     *
+     * Called when a folder is expanded in lazy loading mode.
+     */
+    public function loadFolderChildren(string $folderId): void
+    {
+        // Skip if already loaded
+        if (isset($this->folderChildrenCache[$folderId])) {
+            return;
+        }
+
+        // Load children from adapter
+        $children = $this->getAdapter()->getFolderChildren($folderId);
+        $this->folderChildrenCache[$folderId] = $children;
     }
 
     /**
@@ -106,15 +170,24 @@ class FileManagerSidebar extends Component
 
     /**
      * Toggle folder expansion.
+     *
+     * In lazy loading mode, loads children when expanding a folder.
      */
     public function toggleFolder(?string $folderId): void
     {
         $key = $folderId ?? 'root';
 
         if (in_array($key, $this->expandedFolders)) {
+            // Collapsing - just remove from expanded list
             $this->expandedFolders = array_values(array_diff($this->expandedFolders, [$key]));
         } else {
+            // Expanding - add to list and load children if using lazy loading
             $this->expandedFolders[] = $key;
+
+            // Load children on-demand for lazy loading mode
+            if ($this->shouldUseLazyLoading() && $folderId !== null) {
+                $this->loadFolderChildren($folderId);
+            }
         }
     }
 
@@ -149,7 +222,8 @@ class FileManagerSidebar extends Component
     #[On('filemanager-folder-changed')]
     public function refreshFolderTree(): void
     {
-        // Just refresh the component - the folder tree will be recalculated
+        // Clear the children cache so fresh data is loaded
+        $this->folderChildrenCache = [];
     }
 
     /**

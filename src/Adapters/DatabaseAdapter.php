@@ -161,9 +161,49 @@ class DatabaseAdapter implements FileManagerAdapterInterface
         return $model ? $this->wrap($model) : null;
     }
 
-    public function getFolderTree(): array
+    public function getFolderTree(bool $lazy = false): array
     {
+        if ($lazy) {
+            // Lazy mode: only load root-level folders
+            return $this->getFolderChildren(null);
+        }
+
+        // Full recursive tree (works well for database mode)
         return $this->model()::getFolderTree();
+    }
+
+    /**
+     * Get immediate children of a folder (for lazy loading).
+     *
+     * For database mode, this is efficient as it's a single query.
+     *
+     * @param string|null $path The folder path or ID (null for root)
+     * @return array Array of folder data with id, name, path, has_children
+     */
+    public function getFolderChildren(?string $path = null): array
+    {
+        $parentId = $this->pathToFolderId($path);
+
+        $folders = $this->model()::where('type', 'folder')
+            ->where('parent_id', $parentId)
+            ->orderBy('name')
+            ->get();
+
+        return $folders->map(function ($folder) {
+            $hasChildren = $this->model()::where('type', 'folder')
+                ->where('parent_id', $folder->id)
+                ->exists();
+
+            return [
+                'id' => (string) $folder->id,
+                'name' => $folder->name,
+                'path' => $folder->getFullPath(),
+                'file_count' => $folder->getDirectFileCount(),
+                'has_children' => $hasChildren,
+                'children' => [],
+                'children_loaded' => false,
+            ];
+        })->toArray();
     }
 
     public function getBreadcrumbs(?string $path): array

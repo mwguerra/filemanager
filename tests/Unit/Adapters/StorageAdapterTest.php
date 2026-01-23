@@ -485,6 +485,82 @@ describe('folder tree', function () {
             ->and($tree[0]['name'])->toBe('folder1')
             ->and($tree[0]['children'])->toHaveCount(1);
     });
+
+    it('returns lazy folder tree without children loaded', function () {
+        Storage::disk('testing')->makeDirectory('parent');
+        Storage::disk('testing')->makeDirectory('parent/child');
+        Storage::disk('testing')->makeDirectory('parent/child/grandchild');
+
+        $tree = $this->adapter->getFolderTree(lazy: true);
+
+        expect($tree)->toHaveCount(1)
+            ->and($tree[0]['name'])->toBe('parent')
+            ->and($tree[0]['has_children'])->toBeTrue()
+            ->and($tree[0]['children'])->toBeEmpty()
+            ->and($tree[0]['children_loaded'])->toBeFalse();
+    });
+
+    it('lazy tree assumes all folders might have children for performance', function () {
+        // In lazy mode, we assume all folders might have children to avoid
+        // extra API calls. This trades UX precision for performance.
+        Storage::disk('testing')->makeDirectory('with-children');
+        Storage::disk('testing')->makeDirectory('with-children/child');
+        Storage::disk('testing')->makeDirectory('no-children');
+
+        $tree = $this->adapter->getFolderTree(lazy: true);
+
+        $withChildren = collect($tree)->firstWhere('name', 'with-children');
+        $noChildren = collect($tree)->firstWhere('name', 'no-children');
+
+        // Both should show as potentially having children
+        expect($withChildren['has_children'])->toBeTrue()
+            ->and($noChildren['has_children'])->toBeTrue();
+    });
+});
+
+describe('getFolderChildren', function () {
+    it('returns immediate children only', function () {
+        Storage::disk('testing')->makeDirectory('parent');
+        Storage::disk('testing')->makeDirectory('parent/child1');
+        Storage::disk('testing')->makeDirectory('parent/child2');
+        Storage::disk('testing')->makeDirectory('parent/child1/grandchild');
+
+        $children = $this->adapter->getFolderChildren('parent');
+
+        expect($children)->toHaveCount(2)
+            ->and($children[0]['name'])->toBe('child1')
+            ->and($children[0]['children_loaded'])->toBeFalse()
+            ->and($children[1]['name'])->toBe('child2');
+    });
+
+    it('returns root children when path is null', function () {
+        Storage::disk('testing')->makeDirectory('folder1');
+        Storage::disk('testing')->makeDirectory('folder2');
+
+        $children = $this->adapter->getFolderChildren(null);
+
+        expect($children)->toHaveCount(2);
+    });
+
+    it('skips file counting for performance', function () {
+        Storage::disk('testing')->makeDirectory('folder');
+        Storage::disk('testing')->put('folder/file1.txt', 'content');
+        Storage::disk('testing')->put('folder/file2.txt', 'content');
+
+        $children = $this->adapter->getFolderChildren(null);
+
+        // file_count should be 0 (not counted for performance)
+        expect($children[0]['file_count'])->toBe(0);
+    });
+
+    it('assumes has_children is true to avoid extra API calls', function () {
+        // Even empty folders show has_children=true to avoid extra API calls
+        Storage::disk('testing')->makeDirectory('empty-folder');
+
+        $children = $this->adapter->getFolderChildren(null);
+
+        expect($children[0]['has_children'])->toBeTrue();
+    });
 });
 
 describe('path safety', function () {
