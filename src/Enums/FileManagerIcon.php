@@ -224,7 +224,10 @@ enum FileManagerIcon: string
         }
 
         try {
-            $result = svg($iconName, $class);
+            $svg = svg($iconName, $class);
+            // Convert Svg object to HtmlString to ensure proper string conversion
+            // The Svg class implements Htmlable but may not implement __toString()
+            $result = new HtmlString($svg->toHtml());
 
             return true;
         } catch (\Exception) {
