@@ -422,7 +422,11 @@
             @php
                 $maxSizeMB = round(config('filemanager.upload.max_file_size', 102400) / 1024, 0);
             @endphp
-            Select one or more files to upload (max {{ $maxSizeMB }}MB per file)
+            @if($this->supportsMultipleUploads())
+                Select one or more files to upload (max {{ $maxSizeMB }}MB per file)
+            @else
+                Select a file to upload (max {{ $maxSizeMB }}MB)
+            @endif
         </x-slot>
 
         <div class="space-y-4">
@@ -437,8 +441,12 @@
                 <input
                     type="file"
                     x-ref="fileInput"
-                    wire:model.live="uploadedFiles"
-                    multiple
+                    @if($this->supportsMultipleUploads())
+                        wire:model.live="uploadedFiles"
+                        multiple
+                    @else
+                        wire:model.live="uploadedFile"
+                    @endif
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div class="space-y-2" wire:loading.remove wire:target="uploadedFiles">
@@ -447,6 +455,11 @@
                         <span class="font-medium text-primary-600 dark:text-primary-400">Click to upload</span>
                         or drag and drop
                     </p>
+                    @if(!$this->supportsMultipleUploads())
+                        <p class="text-xs text-warning-600 dark:text-warning-400">
+                            One file at a time (S3 storage limitation)
+                        </p>
+                    @endif
                 </div>
                 <div class="space-y-2" wire:loading wire:target="uploadedFiles">
                     <div class="w-10 h-10 mx-auto border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>

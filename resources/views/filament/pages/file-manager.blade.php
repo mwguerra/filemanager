@@ -453,7 +453,11 @@
             @php
                 $maxSizeMB = round(config('filemanager.upload.max_file_size', 102400) / 1024, 0);
             @endphp
-            Select one or more files to upload (max {{ $maxSizeMB }}MB per file)
+            @if($this->supportsMultipleUploads())
+                Select one or more files to upload (max {{ $maxSizeMB }}MB per file)
+            @else
+                Select a file to upload (max {{ $maxSizeMB }}MB)
+            @endif
         </x-slot>
 
         <div class="space-y-4">
@@ -468,21 +472,29 @@
                 <input
                     type="file"
                     x-ref="fileInput"
-                    wire:model.live="uploadedFiles"
-                    multiple
+                    @if($this->supportsMultipleUploads())
+                        wire:model.live="uploadedFiles"
+                        multiple
+                    @else
+                        wire:model.live="uploadedFile"
+                    @endif
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
-                <div class="space-y-2" wire:loading.remove wire:target="uploadedFiles">
+                <div class="space-y-2" wire:loading.remove wire:target="uploadedFiles, uploadedFile">
                     {!! FileManagerIcon::CloudArrowUp->render('w-12 h-12 mx-auto text-gray-400') !!}
                     <p class="text-sm text-gray-600 dark:text-gray-400">
                         <span class="font-medium text-primary-600 dark:text-primary-400">Click to upload</span>
                         or drag and drop
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-500">
-                        Any file type supported
+                        @if($this->supportsMultipleUploads())
+                            Any file type supported
+                        @else
+                            Upload one file at a time (S3 temp storage limitation)
+                        @endif
                     </p>
                 </div>
-                <div class="space-y-2" wire:loading wire:target="uploadedFiles">
+                <div class="space-y-2" wire:loading wire:target="uploadedFiles, uploadedFile">
                     <div class="w-12 h-12 mx-auto border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                     <p class="text-sm font-medium text-primary-600 dark:text-primary-400">
                         Processing files...

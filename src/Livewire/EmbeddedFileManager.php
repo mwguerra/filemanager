@@ -9,6 +9,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use MWGuerra\FileManager\Adapters\AdapterFactory;
+use MWGuerra\FileManager\Traits\DetectsS3TempUploads;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 use MWGuerra\FileManager\Contracts\FileTypeContract;
@@ -23,6 +24,7 @@ use MWGuerra\FileManager\Services\AuthorizationService;
  */
 class EmbeddedFileManager extends Component
 {
+    use DetectsS3TempUploads;
     use WithFileUploads;
 
     // Configuration properties (set from schema component)
@@ -56,6 +58,7 @@ class EmbeddedFileManager extends Component
     public ?string $itemToRenameId = null;
     public string $renameItemName = '';
     public array $uploadedFiles = [];
+    public $uploadedFile = null; // Single file upload (when S3 temp disk)
     public ?string $previewItemId = null;
 
     public function mount(
@@ -144,6 +147,19 @@ class EmbeddedFileManager extends Component
     {
         $item = $this->previewItem;
         return $item ? $this->getFileTypeForItem($item) : null;
+    }
+
+    /**
+     * Handle single file upload (when S3 temp disk is detected).
+     * Converts single file to array for consistent handling.
+     */
+    public function updatedUploadedFile(): void
+    {
+        if ($this->uploadedFile) {
+            $this->uploadedFiles = [$this->uploadedFile];
+            $this->uploadedFile = null;
+            $this->updatedUploadedFiles();
+        }
     }
 
     public function updatedUploadedFiles(): void

@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
 use MWGuerra\FileManager\Adapters\AdapterFactory;
+use MWGuerra\FileManager\Traits\DetectsS3TempUploads;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 use MWGuerra\FileManager\Contracts\FileTypeContract;
@@ -19,6 +20,7 @@ use MWGuerra\FileManager\Services\AuthorizationService;
 
 class FileManager extends Page
 {
+    use DetectsS3TempUploads;
     use WithFileUploads;
 
     protected string $view = 'filemanager::filament.pages.file-manager';
@@ -122,6 +124,7 @@ class FileManager extends Page
 
     // Upload properties
     public array $uploadedFiles = [];
+    public $uploadedFile = null; // Single file upload (when S3 temp disk)
 
     // Preview properties
     public ?string $previewItemId = null;
@@ -240,6 +243,19 @@ class FileManager extends Page
         $parentPath = $item->getParentPath();
         if ($parentPath !== null) {
             $this->expandParentFolders($parentPath);
+        }
+    }
+
+    /**
+     * Handle single file upload (when S3 temp disk is detected).
+     * Converts single file to array for consistent handling.
+     */
+    public function updatedUploadedFile(): void
+    {
+        if ($this->uploadedFile) {
+            $this->uploadedFiles = [$this->uploadedFile];
+            $this->uploadedFile = null;
+            $this->updatedUploadedFiles();
         }
     }
 
