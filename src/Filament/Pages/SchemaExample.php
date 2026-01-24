@@ -13,6 +13,7 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
+use MWGuerra\FileManager\FileManagerPlugin;
 use MWGuerra\FileManager\Schemas\Components\FileManagerEmbed;
 use MWGuerra\FileManager\Schemas\Components\FileSystemEmbed;
 
@@ -49,7 +50,11 @@ class SchemaExample extends Page implements HasSchemas, HasActions
 
     public static function getNavigationGroup(): ?string
     {
-        return config('filemanager.file_manager.navigation.group', 'FileManager');
+        try {
+            return FileManagerPlugin::get()->getFileManagerNavigationGroup();
+        } catch (\Throwable) {
+            return config('filemanager.file_manager.navigation.group', 'FileManager');
+        }
     }
 
     public static function getSlug(?\Filament\Panel $panel = null): string

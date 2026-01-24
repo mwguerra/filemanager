@@ -9,6 +9,7 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
+use MWGuerra\FileManager\FileManagerPlugin;
 use MWGuerra\FileManager\Schemas\Components\FileManagerEmbed;
 use MWGuerra\FileManager\Schemas\Components\FileSystemEmbed;
 
@@ -38,7 +39,11 @@ class EmbedConfigTest extends Page implements HasSchemas
 
     public static function getNavigationGroup(): ?string
     {
-        return config('filemanager.file_manager.navigation.group', 'FileManager');
+        try {
+            return FileManagerPlugin::get()->getFileManagerNavigationGroup();
+        } catch (\Throwable) {
+            return config('filemanager.file_manager.navigation.group', 'FileManager');
+        }
     }
 
     public function getTitle(): string|Htmlable

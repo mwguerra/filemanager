@@ -19,6 +19,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables;
 use Filament\Tables\Table;
+use MWGuerra\FileManager\FileManagerPlugin;
 
 class FileSystemItemResource extends Resource
 {
@@ -46,7 +47,11 @@ class FileSystemItemResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return config('filemanager.file_manager.navigation.group', 'FileManager');
+        try {
+            return FileManagerPlugin::get()->getFileManagerNavigationGroup();
+        } catch (\Throwable) {
+            return config('filemanager.file_manager.navigation.group', 'FileManager');
+        }
     }
 
     public static function form(Schema $schema): Schema

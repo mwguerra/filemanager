@@ -73,6 +73,7 @@ class FileManagerPlugin implements Plugin
     protected ?string $fileManagerNavigationLabel = null;
     protected ?int $fileManagerNavigationSort = null;
     protected ?string $fileManagerNavigationGroup = null;
+    protected bool $fileManagerNavigationGroupSet = false;
     protected ?string $fileManagerSidebarRootLabel = null;
     protected ?string $fileManagerSidebarHeading = null;
 
@@ -86,6 +87,7 @@ class FileManagerPlugin implements Plugin
     protected ?string $fileSystemNavigationLabel = null;
     protected ?int $fileSystemNavigationSort = null;
     protected ?string $fileSystemNavigationGroup = null;
+    protected bool $fileSystemNavigationGroupSet = false;
     protected ?string $fileSystemSidebarRootLabel = null;
     protected ?string $fileSystemSidebarHeading = null;
 
@@ -445,12 +447,17 @@ class FileManagerPlugin implements Plugin
 
     /**
      * Configure navigation for the File Manager page.
+     *
+     * @param string|null $icon Navigation icon
+     * @param string|null $label Navigation label
+     * @param int|null $sort Navigation sort order
+     * @param string|null|false $group Navigation group. Pass null to remove from any group, false to use default.
      */
     public function fileManagerNavigation(
         ?string $icon = null,
         ?string $label = null,
         ?int $sort = null,
-        ?string $group = null
+        string|null|false $group = false
     ): static {
         if ($icon !== null) {
             $this->fileManagerNavigationIcon = $icon;
@@ -461,8 +468,9 @@ class FileManagerPlugin implements Plugin
         if ($sort !== null) {
             $this->fileManagerNavigationSort = $sort;
         }
-        if ($group !== null) {
+        if ($group !== false) {
             $this->fileManagerNavigationGroup = $group;
+            $this->fileManagerNavigationGroupSet = true;
         }
 
         return $this;
@@ -513,11 +521,15 @@ class FileManagerPlugin implements Plugin
 
     /**
      * Get the File Manager navigation group.
+     * Returns null if explicitly set to null (no group), otherwise returns config default.
      */
     public function getFileManagerNavigationGroup(): ?string
     {
-        return $this->fileManagerNavigationGroup
-            ?? config('filemanager.file_manager.navigation.group', 'FileManager');
+        if ($this->fileManagerNavigationGroupSet) {
+            return $this->fileManagerNavigationGroup;
+        }
+
+        return config('filemanager.file_manager.navigation.group', 'FileManager');
     }
 
     /**
@@ -603,12 +615,17 @@ class FileManagerPlugin implements Plugin
 
     /**
      * Configure navigation for the File System page.
+     *
+     * @param string|null $icon Navigation icon
+     * @param string|null $label Navigation label
+     * @param int|null $sort Navigation sort order
+     * @param string|null|false $group Navigation group. Pass null to remove from any group, false to use default.
      */
     public function fileSystemNavigation(
         ?string $icon = null,
         ?string $label = null,
         ?int $sort = null,
-        ?string $group = null
+        string|null|false $group = false
     ): static {
         if ($icon !== null) {
             $this->fileSystemNavigationIcon = $icon;
@@ -619,8 +636,9 @@ class FileManagerPlugin implements Plugin
         if ($sort !== null) {
             $this->fileSystemNavigationSort = $sort;
         }
-        if ($group !== null) {
+        if ($group !== false) {
             $this->fileSystemNavigationGroup = $group;
+            $this->fileSystemNavigationGroupSet = true;
         }
 
         return $this;
@@ -671,11 +689,15 @@ class FileManagerPlugin implements Plugin
 
     /**
      * Get the File System navigation group.
+     * Returns null if explicitly set to null (no group), otherwise returns config default.
      */
     public function getFileSystemNavigationGroup(): ?string
     {
-        return $this->fileSystemNavigationGroup
-            ?? config('filemanager.file_system.navigation.group')
+        if ($this->fileSystemNavigationGroupSet) {
+            return $this->fileSystemNavigationGroup;
+        }
+
+        return config('filemanager.file_system.navigation.group')
             ?? config('filemanager.file_manager.navigation.group', 'FileManager');
     }
 

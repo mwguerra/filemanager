@@ -46,9 +46,12 @@ class FileSystem extends FileManager
 
     public static function getNavigationGroup(): ?string
     {
-        return FileManagerPlugin::current()?->getFileSystemNavigationGroup()
-            ?? config('filemanager.file_system.navigation.group')
-            ?? config('filemanager.file_manager.navigation.group', 'FileManager');
+        try {
+            return FileManagerPlugin::get()->getFileSystemNavigationGroup();
+        } catch (\Throwable) {
+            return config('filemanager.file_system.navigation.group')
+                ?? config('filemanager.file_manager.navigation.group', 'FileManager');
+        }
     }
 
     public static function getSlug(?\Filament\Panel $panel = null): string

@@ -51,8 +51,11 @@ class FileManager extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return FileManagerPlugin::current()?->getFileManagerNavigationGroup()
-            ?? config('filemanager.file_manager.navigation.group', 'FileManager');
+        try {
+            return FileManagerPlugin::get()->getFileManagerNavigationGroup();
+        } catch (\Throwable) {
+            return config('filemanager.file_manager.navigation.group', 'FileManager');
+        }
     }
 
     /**
