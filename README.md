@@ -1,6 +1,6 @@
 # MWGuerra FileManager
 
-A full-featured file manager package for Laravel and Filament v4 with dual operating modes, S3/MinIO support, file previews, and drag-and-drop uploads.
+A full-featured file manager package for Laravel and Filament v4/v5 with dual operating modes, S3/MinIO support, file previews, and drag-and-drop uploads.
 
 ![File Manager - List View](https://raw.githubusercontent.com/mwguerra/filemanager/main/docs/images/File%20Manager%20-%20List%20View.png)
 
@@ -21,7 +21,7 @@ A full-featured file manager package for Laravel and Filament v4 with dual opera
 
 - PHP 8.2+
 - Laravel 11.x or 12.x
-- Filament 4.x
+- Filament 4.x or 5.x
 
 ## Installation
 
