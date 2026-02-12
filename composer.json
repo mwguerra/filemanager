@@ -1,6 +1,6 @@
 {
     "name": "mwguerra/filemanager",
-    "description": "A full-featured file manager package for Laravel and Filament v4 with dual operating modes, drag-and-drop uploads, S3/MinIO support, and comprehensive security features.",
+    "description": "A full-featured file manager package for Laravel and Filament v4/v5 with dual operating modes, drag-and-drop uploads, S3/MinIO support, and comprehensive security features.",
     "keywords": [
         "laravel",
         "filament",
