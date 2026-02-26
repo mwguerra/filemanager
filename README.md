@@ -1,6 +1,13 @@
 # MWGuerra FileManager
 
-A full-featured file manager package for Laravel and Filament v4 with dual operating modes, S3/MinIO support, file previews, and drag-and-drop uploads.
+A full-featured file manager package for Laravel and Filament v5 with dual operating modes, S3/MinIO support, file previews, and drag-and-drop uploads.
+
+## Version Compatibility
+
+| Version | Filament | Laravel | Livewire | PHP  |
+|---------|----------|---------|----------|------|
+| 2.x     | 5.x      | 12.x    | 4.x      | 8.2+ |
+| 1.x     | 4.x      | 11.x    | 3.x      | 8.2+ |
 
 ![File Manager - List View](https://raw.githubusercontent.com/mwguerra/filemanager/main/docs/images/File%20Manager%20-%20List%20View.png)
 
@@ -20,14 +27,31 @@ A full-featured file manager package for Laravel and Filament v4 with dual opera
 ## Requirements
 
 - PHP 8.2+
-- Laravel 11.x or 12.x
-- Filament 4.x
+- Laravel 12.x
+- Filament 5.x
+- Livewire 4.x
 
 ## Installation
 
+For **Filament 5 / Laravel 12** (latest):
+
 ```bash
-composer require mwguerra/filemanager
+composer require mwguerra/filemanager:"^2.0"
 ```
+
+For **Filament 4 / Laravel 11** (legacy):
+
+```bash
+composer require mwguerra/filemanager:"^1.0"
+```
+
+### Upgrading from v1.x to v2.x
+
+v2.x targets Filament 5, Laravel 12, and Livewire 4. Key changes:
+
+- **Filament 5**: Table `->actions()` renamed to `->recordActions()`, `->bulkActions()` renamed to `->toolbarActions()`
+- **Livewire 4**: If you published views, replace any `@entangle('...')` directives with `$wire.entangle('...')`
+- **Laravel 12**: Minimum Laravel version is now 12.x
 
 Publish configuration:
 

@@ -182,11 +182,11 @@ class FileSystemItemResource extends Resource
                     ->searchable()
                     ->preload(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
