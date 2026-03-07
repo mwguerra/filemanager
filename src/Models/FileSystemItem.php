@@ -288,7 +288,7 @@ class FileSystemItem extends Model implements FileSystemItemInterface
     /**
      * Count direct files in a folder (static version for null parent).
      */
-    public static function getDirectFileCountForFolder(?int $folderId): int
+    public static function getDirectFileCountForFolder(int|string|null $folderId): int
     {
         return static::where('parent_id', $folderId)
             ->where('type', '!=', FileSystemItemType::Folder->value)
@@ -298,7 +298,7 @@ class FileSystemItem extends Model implements FileSystemItemInterface
     /**
      * Count all files in a folder and its descendants (static version for null parent).
      */
-    public static function getFileCountForFolder(?int $folderId): int
+    public static function getFileCountForFolder(int|string|null $folderId): int
     {
         if ($folderId === null) {
             // Root: count all files in the system
@@ -312,7 +312,7 @@ class FileSystemItem extends Model implements FileSystemItemInterface
     /**
      * Get folder tree structure for sidebar.
      */
-    public static function getFolderTree(?int $parentId = null): array
+    public static function getFolderTree(int|string|null $parentId = null): array
     {
         $folders = static::where('type', FileSystemItemType::Folder->value)
             ->where('parent_id', $parentId)
@@ -333,7 +333,7 @@ class FileSystemItem extends Model implements FileSystemItemInterface
     /**
      * Get items in a folder (by parent_id).
      */
-    public static function getItemsInFolder(?int $parentId = null): \Illuminate\Database\Eloquent\Collection
+    public static function getItemsInFolder(int|string|null $parentId = null): \Illuminate\Database\Eloquent\Collection
     {
         return static::where('parent_id', $parentId)
             ->orderByRaw("CASE WHEN type = '" . FileSystemItemType::Folder->value . "' THEN 0 ELSE 1 END")

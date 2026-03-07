@@ -88,7 +88,7 @@ class FileSystemItemFactory extends Factory
         ]);
     }
 
-    public function withParent(?int $parentId): static
+    public function withParent(int|string|null $parentId): static
     {
         return $this->state(fn (array $attributes) => [
             'parent_id' => $parentId,

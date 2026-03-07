@@ -387,7 +387,7 @@ class FileManager extends Page
     /**
      * Navigate to folder by ID (for database mode compatibility).
      */
-    public function navigateToId(?int $folderId): void
+    public function navigateToId(int|string|null $folderId): void
     {
         $this->currentPath = $folderId ? (string) $folderId : null;
         $this->selectedItems = [];

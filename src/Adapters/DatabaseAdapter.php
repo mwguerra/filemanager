@@ -82,7 +82,7 @@ class DatabaseAdapter implements FileManagerAdapterInterface
      * 1. Short-circuiting for numeric IDs
      * 2. Using recursive path traversal when needed
      */
-    protected function pathToFolderId(?string $path): ?int
+    protected function pathToFolderId(?string $path): int|string|null
     {
         if ($path === null || $path === '' || $path === '/') {
             return null;
@@ -107,7 +107,7 @@ class DatabaseAdapter implements FileManagerAdapterInterface
      * 1. It only queries folders at each level of the path
      * 2. It stops as soon as a segment isn't found
      */
-    protected function resolvePathToId(string $path): ?int
+    protected function resolvePathToId(string $path): int|string|null
     {
         // Split path into segments
         $segments = array_filter(explode('/', $path), fn ($s) => $s !== '');
