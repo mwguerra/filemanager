@@ -90,17 +90,17 @@ interface FileSystemItemInterface
     /**
      * Get folder tree structure for sidebar.
      */
-    public static function getFolderTree(?int $parentId = null): array;
+    public static function getFolderTree(int|string|null $parentId = null): array;
 
     /**
      * Get items in a folder (by parent_id).
      */
-    public static function getItemsInFolder(?int $parentId = null): Collection;
+    public static function getItemsInFolder(int|string|null $parentId = null): Collection;
 
     /**
      * Count direct files in a folder (static version for null parent).
      */
-    public static function getDirectFileCountForFolder(?int $folderId): int;
+    public static function getDirectFileCountForFolder(int|string|null $folderId): int;
 
     /**
      * Determine file type from mime type.

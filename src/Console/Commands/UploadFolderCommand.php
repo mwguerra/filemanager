@@ -188,7 +188,7 @@ class UploadFolderCommand extends Command
     /**
      * Ensure target folder exists in storage and database.
      */
-    protected function ensureTargetFolder(string $modelClass, $storage, string $target): ?int
+    protected function ensureTargetFolder(string $modelClass, $storage, string $target): int|string|null
     {
         $parts = array_filter(explode('/', $target));
         $parentId = null;
@@ -237,7 +237,7 @@ class UploadFolderCommand extends Command
         $storage,
         string $storagePath,
         ?string $modelClass,
-        ?int $parentId
+        int|string|null $parentId
     ): void {
         $items = File::files($localPath);
         $directories = File::directories($localPath);

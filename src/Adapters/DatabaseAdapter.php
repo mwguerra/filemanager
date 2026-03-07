@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use MWGuerra\FileManager\Contracts\FileManagerAdapterInterface;
 use MWGuerra\FileManager\Contracts\FileManagerItemInterface;
 use MWGuerra\FileManager\Contracts\FileSystemItemInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Database adapter for file management.
@@ -54,21 +55,33 @@ class DatabaseAdapter implements FileManagerAdapterInterface
     }
 
     /**
-     * Find a model by ID.
+     * Find a model by ID (supports both integer and UUID).
      */
-    protected function find(int $id): ?FileSystemItemInterface
+    protected function find(int|string $id): ?FileSystemItemInterface
     {
         return $this->model()::find($id);
     }
 
     /**
+     * Check if a string looks like a valid UUID.
+     */
+    protected function isUuid(string $value): bool
+    {
+        return Uuid::isValid($value);
+    }
+
+    /**
      * Convert identifier to model.
-     * In database mode, identifier is the model ID.
+     * In database mode, identifier is the model ID (int or UUID).
      */
     protected function getModelFromIdentifier(string $identifier): ?FileSystemItemInterface
     {
         if (is_numeric($identifier)) {
             return $this->find((int) $identifier);
+        }
+
+        if ($this->isUuid($identifier)) {
+            return $this->find($identifier);
         }
 
         return null;
@@ -79,10 +92,10 @@ class DatabaseAdapter implements FileManagerAdapterInterface
      * For database mode, we need to resolve the path to a folder ID.
      *
      * This method is optimized to avoid N+1 queries by:
-     * 1. Short-circuiting for numeric IDs
+     * 1. Short-circuiting for numeric IDs and UUIDs
      * 2. Using recursive path traversal when needed
      */
-    protected function pathToFolderId(?string $path): ?int
+    protected function pathToFolderId(?string $path): int|string|null
     {
         if ($path === null || $path === '' || $path === '/') {
             return null;
@@ -91,6 +104,11 @@ class DatabaseAdapter implements FileManagerAdapterInterface
         // Path might be an ID (most common case - short circuit)
         if (is_numeric($path)) {
             return (int) $path;
+        }
+
+        // Path might be a UUID
+        if ($this->isUuid($path)) {
+            return $path;
         }
 
         // Normalize path
@@ -107,7 +125,7 @@ class DatabaseAdapter implements FileManagerAdapterInterface
      * 1. It only queries folders at each level of the path
      * 2. It stops as soon as a segment isn't found
      */
-    protected function resolvePathToId(string $path): ?int
+    protected function resolvePathToId(string $path): int|string|null
     {
         // Split path into segments
         $segments = array_filter(explode('/', $path), fn ($s) => $s !== '');
