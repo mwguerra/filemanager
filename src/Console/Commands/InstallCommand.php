@@ -102,12 +102,15 @@ class InstallCommand extends Command
 
         // Step 3: Run migrations
         if (!$this->option('skip-migrations')) {
-            $this->info('Step 3: Running migrations...');
-            $exitCode = Artisan::call('migrate', [], $this->output);
+            $this->info('Step 3: Publishing migrations...');
+            $exitCode = Artisan::call('vendor:publish', [
+                '--tag' => 'filemanager-migrations',
+                '--force' => $this->option('force'),
+            ], $this->output);
             if ($exitCode === 0) {
-                $steps[] = ['status' => 'success', 'message' => 'Database migrations completed'];
+                $steps[] = ['status' => 'success', 'message' => 'Migrations published successfully'];
             } else {
-                $steps[] = ['status' => 'warning', 'message' => 'Migrations had issues'];
+                $steps[] = ['status' => 'warning', 'message' => 'Migrations publish had issues'];
             }
             $this->newLine();
         }
