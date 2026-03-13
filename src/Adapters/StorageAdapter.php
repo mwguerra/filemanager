@@ -463,13 +463,16 @@ class StorageAdapter implements FileManagerAdapterInterface
         }
 
         try {
+            $fileSize = $file->getSize();
+            $fileMimeType = $file->getMimeType();
+            
             $storedPath = $file->storeAs($fullPath ?: '', $originalName, $this->disk);
 
             Log::info('FileManager file uploaded', [
                 'path' => $storedPath,
-                'original_name' => $file->getClientOriginalName(),
-                'size' => $file->getSize(),
-                'mime_type' => $file->getMimeType(),
+                'original_name' => $originalName,
+                'size' => $fileSize,
+                'mime_type' => $fileMimeType,
                 'disk' => $this->disk,
                 'user_id' => auth()->id(),
             ]);
