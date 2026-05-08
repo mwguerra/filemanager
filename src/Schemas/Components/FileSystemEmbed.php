@@ -22,11 +22,11 @@ class FileSystemEmbed extends Livewire
 
     protected string|Closure $defaultViewMode = 'grid';
 
-    protected ?string $disk = null;
+    protected string|Closure|null $disk = null;
 
-    protected ?string $target = null;
+    protected string|Closure|null $target = null;
 
-    protected ?string $initialFolder = null;
+    protected string|Closure|null $initialFolder = null;
 
     protected string|Closure $sidebarRootLabel = 'Root';
 
@@ -34,7 +34,7 @@ class FileSystemEmbed extends Livewire
 
     protected string|Closure $breadcrumbsRootLabel = 'Root';
 
-    public static function make(Closure|string $component = null, Closure|array $data = []): static
+    public static function make(Closure|string|null $component = null, Closure|array $data = []): static
     {
         $static = app(static::class, [
             'component' => $component ?? EmbeddedFileSystem::class,
@@ -159,7 +159,7 @@ class FileSystemEmbed extends Livewire
     /**
      * Set the storage disk to use.
      */
-    public function disk(?string $disk): static
+    public function disk(string|Closure|null $disk): static
     {
         $this->disk = $disk;
 
@@ -171,13 +171,13 @@ class FileSystemEmbed extends Livewire
      */
     public function getDisk(): ?string
     {
-        return $this->disk;
+        return $this->evaluate($this->disk);
     }
 
     /**
      * Set the target directory within the disk.
      */
-    public function target(?string $target): static
+    public function target(string|Closure|null $target): static
     {
         $this->target = $target;
 
@@ -189,14 +189,14 @@ class FileSystemEmbed extends Livewire
      */
     public function getTarget(): ?string
     {
-        return $this->target;
+        return $this->evaluate($this->target);
     }
 
     /**
      * Set the initial folder path to navigate to on load.
      * For storage mode, this is the folder path within the disk.
      */
-    public function initialFolder(?string $folder): static
+    public function initialFolder(string|Closure|null $folder): static
     {
         $this->initialFolder = $folder;
 
@@ -208,7 +208,7 @@ class FileSystemEmbed extends Livewire
      */
     public function getInitialFolder(): ?string
     {
-        return $this->initialFolder;
+        return $this->evaluate($this->initialFolder);
     }
 
     /**
