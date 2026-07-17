@@ -54,9 +54,7 @@ class FileManagerServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasMigrations([
                 'create_file_system_items_table',
-                'add_unique_constraint_to_file_system_items_table',
             ])
-            ->runsMigrations()
             ->hasCommands([
                 FileSystemListCommand::class,
                 InstallCommand::class,
