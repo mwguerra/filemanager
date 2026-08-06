@@ -1,5 +1,6 @@
 /vendor/
 /composer.lock
+/.maestro/
 /.phpunit.cache/
 /tests/coverage/
 /node_modules/
