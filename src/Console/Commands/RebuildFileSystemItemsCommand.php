@@ -132,7 +132,7 @@ class RebuildFileSystemItemsCommand extends Command
     /**
      * Recursively scan a directory and create database records.
      */
-    protected function scanDirectory($storage, string $modelClass, string $path, ?int $parentId): void
+    protected function scanDirectory($storage, string $modelClass, string $path, int|string|null $parentId): void
     {
         // Get directories and files
         $directories = $storage->directories($path);

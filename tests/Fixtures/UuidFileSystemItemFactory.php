@@ -1,15 +1,14 @@
 <?php
 
-namespace MWGuerra\FileManager\Database\Factories;
+namespace MWGuerra\FileManager\Tests\Fixtures;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use MWGuerra\FileManager\Enums\FileSystemItemType;
 use MWGuerra\FileManager\Enums\FileType;
-use MWGuerra\FileManager\Models\FileSystemItem;
 
-class FileSystemItemFactory extends Factory
+class UuidFileSystemItemFactory extends Factory
 {
-    protected $model = FileSystemItem::class;
+    protected $model = UuidFileSystemItem::class;
 
     public function definition(): array
     {
@@ -81,7 +80,7 @@ class FileSystemItemFactory extends Factory
         ]);
     }
 
-    public function inFolder(FileSystemItem $folder): static
+    public function inFolder(UuidFileSystemItem $folder): static
     {
         return $this->state(fn (array $attributes) => [
             'parent_id' => $folder->id,
