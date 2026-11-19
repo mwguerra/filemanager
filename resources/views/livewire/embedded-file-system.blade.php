@@ -2,6 +2,9 @@
 @php
     use MWGuerra\FileManager\Enums\FileManagerIcon;
 @endphp
+@assets
+    <link rel="stylesheet" href="{{ \Filament\Support\Facades\FilamentAsset::getStyleHref('filemanager', 'mwguerra/filemanager') }}">
+@endassets
 <div class="fi-embedded-file-manager border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" style="height: {{ $height }};">
     <div class="flex flex-col h-full" x-data="{}">
         @if($showHeader)

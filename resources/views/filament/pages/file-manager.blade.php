@@ -1,6 +1,9 @@
 @php
     use MWGuerra\FileManager\Enums\FileManagerIcon;
 @endphp
+@assets
+    <link rel="stylesheet" href="{{ \Filament\Support\Facades\FilamentAsset::getStyleHref('filemanager', 'mwguerra/filemanager') }}">
+@endassets
 <x-filament-panels::page>
     @push('styles')
     <style>

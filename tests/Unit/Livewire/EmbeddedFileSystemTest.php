@@ -1,5 +1,8 @@
 <?php
 
+use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use MWGuerra\FileManager\Livewire\EmbeddedFileSystem;
 use MWGuerra\FileManager\Models\FileSystemItem;
 
@@ -611,5 +614,20 @@ describe('refresh', function () {
         $component->refresh();
 
         expect(true)->toBeTrue();
+    });
+});
+
+describe('stylesheet', function () {
+    it('is loaded only on the pages that render the file manager', function () {
+        $stylesheet = FilamentAsset::getStyles(['mwguerra/filemanager'])[0];
+
+        // Filament prints a registered stylesheet on every page of every panel unless it is loaded on request.
+        expect($stylesheet->isLoadedOnRequest())->toBeTrue();
+
+        Route::get('/without-file-manager', fn () => Blade::render('<html><head></head><body></body></html>'));
+        Route::get('/with-file-manager', fn () => Blade::render('<html><head></head><body><livewire:embedded-file-system /></body></html>'));
+
+        $this->get('/without-file-manager')->assertDontSee($stylesheet->getHref(), false);
+        $this->get('/with-file-manager')->assertSee($stylesheet->getHref(), false);
     });
 });
