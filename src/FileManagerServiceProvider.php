@@ -115,11 +115,15 @@ class FileManagerServiceProvider extends PackageServiceProvider
 
     /**
      * Register plugin assets with Filament.
+     *
+     * The stylesheet is loaded on request: Filament prints every other registered asset on every page of every
+     * panel, including the panels that do not use this plugin. The views that render the file manager load it
+     * themselves with `@assets`.
      */
     protected function registerAssets(): void
     {
         FilamentAsset::register([
-            Css::make('filemanager', __DIR__ . '/../resources/dist/filemanager.css'),
+            Css::make('filemanager', __DIR__ . '/../resources/dist/filemanager.css')->loadedOnRequest(),
         ], 'mwguerra/filemanager');
     }
 

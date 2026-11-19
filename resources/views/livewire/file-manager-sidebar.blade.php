@@ -1,6 +1,9 @@
 @php
     use MWGuerra\FileManager\Enums\FileManagerIcon;
 @endphp
+@assets
+    <link rel="stylesheet" href="{{ \Filament\Support\Facades\FilamentAsset::getStyleHref('filemanager', 'mwguerra/filemanager') }}">
+@endassets
 <div class="fi-sidebar-nav-filemanager">
     <div class="px-3 py-2">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">

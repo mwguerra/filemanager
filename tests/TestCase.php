@@ -2,6 +2,8 @@
 
 namespace MWGuerra\FileManager\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,6 +30,8 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
             LivewireServiceProvider::class,
             FilamentServiceProvider::class,
             SupportServiceProvider::class,
@@ -58,6 +62,9 @@ class TestCase extends Orchestra
 
         // Session configuration
         $app['config']->set('session.driver', 'array');
+
+        // Rendering a component's view encrypts its CSRF token and snapshot
+        $app['config']->set('app.key', 'base64:' . base64_encode(str_repeat('a', 32)));
 
         // FileManager configuration
         $app['config']->set('filemanager.mode', 'storage');
